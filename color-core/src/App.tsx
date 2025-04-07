@@ -140,6 +140,7 @@ function App() {
   const [lockedColors, setLockedColors] = useState<boolean[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
   const [hoveredLockIndex, setHoveredLockIndex] = useState<number | null>(null);
+  const [hoveredStyleId, setHoveredStyleId] = useState<string | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   // Update window width on resize
@@ -261,65 +262,6 @@ function App() {
                 </button>
               </>
             )}
-            <button
-              onClick={() => {
-                // Compare regular and unique color scheme generators
-                const iterations = 1000;
-                let regularDuplicatesCount = 0;
-                let uniqueDuplicatesCount = 0;
-                
-                // Test across multiple core styles
-                const testStyles = ["pastelcore", "gothcore", "fairycore", "mosscore", "retrocore"];
-                
-                testStyles.forEach(styleId => {
-                  for (let i = 0; i < iterations/testStyles.length; i++) {
-                    // Test regular scheme generator
-                    const regularScheme = getRandomColorScheme(styleId);
-                    const regularUnique = new Set(regularScheme).size;
-                    if (regularUnique !== regularScheme.length) {
-                      regularDuplicatesCount++;
-                    }
-                    
-                    // Test unique scheme generator
-                    const uniqueScheme = getUniqueColorScheme(styleId);
-                    const uniqueCount = new Set(uniqueScheme).size;
-                    if (uniqueCount !== uniqueScheme.length) {
-                      uniqueDuplicatesCount++;
-                    }
-                  }
-                });
-                
-                console.log(`Regular generator duplicates: ${regularDuplicatesCount}/${iterations}`);
-                console.log(`Unique generator duplicates: ${uniqueDuplicatesCount}/${iterations}`);
-                console.log(`Improvement: ${regularDuplicatesCount - uniqueDuplicatesCount} fewer duplicates`);
-                
-                // Generate a demo scheme using both methods for current style
-                if (activeStyleId) {
-                  const regularDemo = getRandomColorScheme(activeStyleId);
-                  const uniqueDemo = getUniqueColorScheme(activeStyleId);
-                  
-                  console.log("Regular scheme:", regularDemo, 
-                    "Unique colors:", new Set(regularDemo).size,
-                    "Has duplicates:", new Set(regularDemo).size !== regularDemo.length);
-                  
-                  console.log("Unique scheme:", uniqueDemo,
-                    "Unique colors:", new Set(uniqueDemo).size,
-                    "Has duplicates:", new Set(uniqueDemo).size !== uniqueDemo.length);
-                }
-                
-                // Show confirmation to user
-                setNotification("Color scheme comparison complete! Check console for results.");
-              }}
-              style={{
-                ...styles.button, 
-                ...styles.secondaryButton,
-                fontSize: '0.75rem',
-                padding: '0.4rem 0.6rem',
-                marginLeft: '5px',
-              }}
-            >
-              Test
-            </button>
           </div>
         </div>
       </header>
@@ -345,12 +287,22 @@ function App() {
                   <button
                     key={style.id}
                     onClick={() => handleStyleSelect(style.id)}
+                    onMouseEnter={() => setHoveredStyleId(style.id)}
+                    onMouseLeave={() => setHoveredStyleId(null)}
                     style={{
                       padding: '0.75rem',
                       textAlign: 'left',
                       borderRadius: '0.375rem',
-                      backgroundColor: activeStyleId === style.id ? '#eef2ff' : 'white',
+                      backgroundColor: activeStyleId === style.id 
+                        ? '#eef2ff' 
+                        : hoveredStyleId === style.id ? '#f9fafb' : 'white',
                       border: `1px solid ${activeStyleId === style.id ? '#6366f1' : '#e5e7eb'}`,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      transform: hoveredStyleId === style.id ? 'translateY(-2px)' : 'translateY(0)',
+                      boxShadow: hoveredStyleId === style.id 
+                        ? '0 4px 6px rgba(0,0,0,0.1)' 
+                        : '0 1px 2px rgba(0,0,0,0.05)',
                     } as CSSProperties}
                   >
                     <div>
@@ -411,17 +363,18 @@ function App() {
                             backgroundColor: hoveredLockIndex === index ? 
                               'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
                             color: 'white',
-                            width: '32px',
-                            height: '32px',
+                            width: '40px',
+                            height: '40px',
                             borderRadius: '50%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             border: 'none',
                             cursor: 'pointer',
-                            fontSize: '16px',
+                            fontSize: '20px',
                             transition: 'all 0.2s',
                             transform: hoveredLockIndex === index ? 'scale(1.1)' : 'scale(1)',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                           } as CSSProperties}
                           onClick={(e) => {
                             e.stopPropagation();
