@@ -53,17 +53,19 @@ const styles: Record<string, CSSProperties> = {
   sidebar: {
     width: '250px',
     flexShrink: 0,
-    backgroundColor: 'white',
-    padding: '1rem',
-    boxShadow: '1px 0 3px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#f8fafc',
+    padding: '1.25rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     overflowY: 'auto',
     height: 'calc(100vh - 64px)', // Subtract header height
     position: 'sticky',
     top: '64px',
+    borderRight: '1px solid #e2e8f0',
   },
   mainContent: {
     flex: 1,
-    padding: '1.5rem',
+    padding: '1.5rem 2rem',
+    backgroundColor: '#ffffff',
   },
   colorsGrid: {
     display: 'grid',
@@ -74,9 +76,11 @@ const styles: Record<string, CSSProperties> = {
   colorBox: {
     position: 'relative',
     aspectRatio: '1/1',
-    borderRadius: '0.5rem',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    borderRadius: '0.75rem',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
     cursor: 'pointer',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    overflow: 'hidden',
   },
   colorLabel: {
     position: 'absolute',
@@ -86,6 +90,8 @@ const styles: Record<string, CSSProperties> = {
     padding: '0.75rem',
     textAlign: 'center',
     fontFamily: 'monospace',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    color: 'white',
   },
   welcomeScreen: {
     maxWidth: '400px',
@@ -110,6 +116,7 @@ function App() {
   const [colorScheme, setColorScheme] = useState<string[]>([]);
   const [lockedColors, setLockedColors] = useState<boolean[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
+  const [hoveredLockIndex, setHoveredLockIndex] = useState<number | null>(null);
   
   // Get all categories for organization
   const categories = getAllCategories();
@@ -278,38 +285,49 @@ function App() {
                         style={{
                           ...styles.colorBox,
                           backgroundColor: color,
+                          transform: hoveredLockIndex === index ? 'translateY(-4px)' : 'translateY(0)',
+                          boxShadow: hoveredLockIndex === index 
+                            ? '0 8px 16px rgba(0, 0, 0, 0.15)' 
+                            : '0 4px 10px rgba(0, 0, 0, 0.1)',
                         }}
                         onClick={() => handleColorClick(color)}
+                        onMouseEnter={() => setHoveredLockIndex(index)}
+                        onMouseLeave={() => setHoveredLockIndex(null)}
                       >
                         <div style={{
                           ...styles.colorLabel,
-                          backgroundColor: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
-                          color: isDark ? '#111827' : 'white',
                         } as CSSProperties}>
                           {color}
                         </div>
                         
-                        {/* Lock button */}
+                        {/* Lock button - larger and more minimalist */}
                         <button 
                           style={{
                             position: 'absolute',
-                            top: '0.5rem',
-                            right: '0.5rem',
-                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
-                            color: isDark ? 'black' : 'white',
-                            width: '24px',
-                            height: '24px',
+                            top: '0.75rem',
+                            right: '0.75rem',
+                            backgroundColor: hoveredLockIndex === index ? 
+                              'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+                            color: 'white',
+                            width: '32px',
+                            height: '32px',
                             borderRadius: '50%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             border: 'none',
                             cursor: 'pointer',
+                            fontSize: '16px',
+                            transition: 'all 0.2s',
+                            transform: hoveredLockIndex === index ? 'scale(1.1)' : 'scale(1)',
                           } as CSSProperties}
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleLock(index);
                           }}
+                          onMouseEnter={() => setHoveredLockIndex(index)}
+                          onMouseLeave={() => setHoveredLockIndex(null)}
+                          title={lockedColors[index] ? "Unlock color" : "Lock color"}
                         >
                           {lockedColors[index] ? '🔒' : '🔓'}
                         </button>
