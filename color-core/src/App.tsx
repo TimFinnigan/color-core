@@ -262,65 +262,6 @@ function App() {
                 </button>
               </>
             )}
-            <button
-              onClick={() => {
-                // Compare regular and unique color scheme generators
-                const iterations = 1000;
-                let regularDuplicatesCount = 0;
-                let uniqueDuplicatesCount = 0;
-                
-                // Test across multiple core styles
-                const testStyles = ["pastelcore", "gothcore", "fairycore", "mosscore", "retrocore"];
-                
-                testStyles.forEach(styleId => {
-                  for (let i = 0; i < iterations/testStyles.length; i++) {
-                    // Test regular scheme generator
-                    const regularScheme = getRandomColorScheme(styleId);
-                    const regularUnique = new Set(regularScheme).size;
-                    if (regularUnique !== regularScheme.length) {
-                      regularDuplicatesCount++;
-                    }
-                    
-                    // Test unique scheme generator
-                    const uniqueScheme = getUniqueColorScheme(styleId);
-                    const uniqueCount = new Set(uniqueScheme).size;
-                    if (uniqueCount !== uniqueScheme.length) {
-                      uniqueDuplicatesCount++;
-                    }
-                  }
-                });
-                
-                console.log(`Regular generator duplicates: ${regularDuplicatesCount}/${iterations}`);
-                console.log(`Unique generator duplicates: ${uniqueDuplicatesCount}/${iterations}`);
-                console.log(`Improvement: ${regularDuplicatesCount - uniqueDuplicatesCount} fewer duplicates`);
-                
-                // Generate a demo scheme using both methods for current style
-                if (activeStyleId) {
-                  const regularDemo = getRandomColorScheme(activeStyleId);
-                  const uniqueDemo = getUniqueColorScheme(activeStyleId);
-                  
-                  console.log("Regular scheme:", regularDemo, 
-                    "Unique colors:", new Set(regularDemo).size,
-                    "Has duplicates:", new Set(regularDemo).size !== regularDemo.length);
-                  
-                  console.log("Unique scheme:", uniqueDemo,
-                    "Unique colors:", new Set(uniqueDemo).size,
-                    "Has duplicates:", new Set(uniqueDemo).size !== uniqueDemo.length);
-                }
-                
-                // Show confirmation to user
-                setNotification("Color scheme comparison complete! Check console for results.");
-              }}
-              style={{
-                ...styles.button, 
-                ...styles.secondaryButton,
-                fontSize: '0.75rem',
-                padding: '0.4rem 0.6rem',
-                marginLeft: '5px',
-              }}
-            >
-              Test
-            </button>
           </div>
         </div>
       </header>
