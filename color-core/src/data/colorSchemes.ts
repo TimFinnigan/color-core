@@ -14,6 +14,19 @@ export interface CoreStyle {
 
 export const coreStyles: CoreStyle[] = [
   {
+    id: "blue-shades",
+    name: "Blue Shades",
+    description: "Rich blues from deep navy to silver lake",
+    category: "Color Palettes",
+    colors: {
+      primary: ["#0D1B2A", "#1B263B", "#415A77", "#778DA9", "#E0E1DD"],
+      secondary: ["#0D1B2A", "#1B263B", "#415A77", "#778DA9", "#E0E1DD"],
+      accent: ["#0D1B2A", "#1B263B", "#415A77", "#778DA9", "#E0E1DD"],
+      background: ["#E0E1DD", "#F5F5F5", "#FFFFFF", "#F0F8FF", "#F8F9FA"],
+      text: ["#0D1B2A", "#1B263B", "#333333", "#555555", "#777777"]
+    }
+  },
+  {
     id: "pastelcore",
     name: "Pastelcore",
     description: "All things soft and pastel",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { CoreStyle } from '../data/colorSchemes';
 
 interface StyleButtonProps {
@@ -13,14 +13,23 @@ const StyleButton: React.FC<StyleButtonProps> = ({ style, onClick, isActive }) =
   return (
     <button
       onClick={() => onClick(id)}
-      className={`p-3 w-full text-left rounded-lg transition-all 
-                 ${isActive 
-                   ? 'bg-indigo-100 border-indigo-500 border-2' 
-                   : 'bg-white border border-gray-200 hover:bg-gray-50'}`}
+      style={{
+        padding: '0.75rem',
+        width: '100%',
+        textAlign: 'left',
+        borderRadius: '0.5rem',
+        backgroundColor: isActive ? '#eef2ff' : 'white',
+        border: `1px solid ${isActive ? '#6366f1' : '#e5e7eb'}`,
+        transition: 'all 0.2s',
+      } as CSSProperties}
     >
-      <div className="flex flex-col">
-        <span className="font-medium text-gray-900">{name}</span>
-        <span className="text-xs text-gray-600">{description}</span>
+      <div style={{ display: 'flex', flexDirection: 'column' } as CSSProperties}>
+        <span style={{ fontWeight: 500, color: '#111827' }}>
+          {name}
+        </span>
+        <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+          {description}
+        </span>
       </div>
     </button>
   );

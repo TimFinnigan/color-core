@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { CoreStyle } from '../data/colorSchemes';
 import StyleButton from './StyleButton';
 
@@ -16,9 +16,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   activeStyleId
 }) => {
   return (
-    <div className="mb-8">
-      <h2 className="text-xl font-bold mb-3">{category}</h2>
-      <div className="space-y-2">
+    <div style={{ marginBottom: '2rem' }}>
+      <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>
+        {category}
+      </h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' } as CSSProperties}>
         {styles.map(style => (
           <StyleButton
             key={style.id}

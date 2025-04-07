@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ColorBox from './ColorBox';
 
 interface ColorSchemeProps {
@@ -10,9 +10,21 @@ interface ColorSchemeProps {
 
 const ColorScheme: React.FC<ColorSchemeProps> = ({ colors, onClick, title, onColorClick }) => {
   return (
-    <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-      {title && <h3 className="text-lg font-medium mb-3">{title}</h3>}
-      <div className="grid grid-cols-5 gap-2">
+    <div style={{
+      padding: '1rem',
+      backgroundColor: 'white',
+      borderRadius: '0.75rem',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      transition: 'box-shadow 0.2s'
+    } as CSSProperties}>
+      {title && <h3 style={{ fontSize: '1.125rem', fontWeight: 500, marginBottom: '0.75rem' }}>
+        {title}
+      </h3>}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: '0.5rem'
+      } as CSSProperties}>
         {colors.map((color, index) => (
           <ColorBox 
             key={index} 
@@ -23,7 +35,18 @@ const ColorScheme: React.FC<ColorSchemeProps> = ({ colors, onClick, title, onCol
       </div>
       {onClick && (
         <button
-          className="mt-3 w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium transition-colors"
+          style={{
+            marginTop: '0.75rem',
+            width: '100%',
+            padding: '0.5rem',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '0.375rem',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s'
+          } as CSSProperties}
           onClick={onClick}
         >
           Generate New
