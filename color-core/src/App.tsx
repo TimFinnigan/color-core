@@ -48,15 +48,18 @@ const styles: Record<string, CSSProperties> = {
   },
   mainContainer: {
     display: 'flex',
-    position: 'relative',
     flex: 1,
   },
   sidebar: {
     width: '250px',
+    flexShrink: 0,
     backgroundColor: 'white',
     padding: '1rem',
     boxShadow: '1px 0 3px rgba(0, 0, 0, 0.1)',
     overflowY: 'auto',
+    height: 'calc(100vh - 64px)', // Subtract header height
+    position: 'sticky',
+    top: '64px',
   },
   mainContent: {
     flex: 1,
@@ -64,7 +67,7 @@ const styles: Record<string, CSSProperties> = {
   },
   colorsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(5, 1fr)',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
     gap: '1rem',
     marginBottom: '2rem',
   },
@@ -83,9 +86,6 @@ const styles: Record<string, CSSProperties> = {
     padding: '0.75rem',
     textAlign: 'center',
     fontFamily: 'monospace',
-  },
-  hiddenSidebar: {
-    transform: 'translateX(-100%)',
   },
   welcomeScreen: {
     maxWidth: '400px',
@@ -110,7 +110,6 @@ function App() {
   const [colorScheme, setColorScheme] = useState<string[]>([]);
   const [lockedColors, setLockedColors] = useState<boolean[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
-  const [showSidebar, setShowSidebar] = useState(false);
   
   // Get all categories for organization
   const categories = getAllCategories();
@@ -144,7 +143,6 @@ function App() {
 
   const handleStyleSelect = (id: string) => {
     setActiveStyleId(id);
-    setShowSidebar(false);
   };
 
   const toggleLock = (index: number) => {
@@ -217,26 +215,13 @@ function App() {
                 </button>
               </>
             )}
-
-            <button
-              onClick={() => setShowSidebar(!showSidebar)}
-              style={{...styles.button, ...styles.secondaryButton}}
-            >
-              {showSidebar ? 'Hide Styles' : 'Choose Style'}
-            </button>
           </div>
         </div>
       </header>
 
       <div style={styles.mainContainer as CSSProperties}>
-        {/* Sidebar */}
-        <div style={{
-          ...styles.sidebar,
-          ...(showSidebar ? {} : styles.hiddenSidebar),
-          position: 'absolute',
-          height: '100%',
-          zIndex: 10,
-        } as CSSProperties}>
+        {/* Sidebar - Always visible */}
+        <div style={styles.sidebar as CSSProperties}>
           <h2 style={{fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem'}}>
             Choose Your Core
           </h2>
@@ -356,14 +341,8 @@ function App() {
                 Welcome to Color Core
               </h2>
               <p style={{color: '#4b5563', marginBottom: '2rem'}}>
-                Choose an aesthetic style to generate color schemes
+                Choose an aesthetic style from the left panel to generate color schemes
               </p>
-              <button
-                onClick={() => setShowSidebar(true)}
-                style={{...styles.button, ...styles.primaryButton, padding: '0.75rem 1.5rem'}}
-              >
-                Choose a Style
-              </button>
             </div>
           )}
         </div>
