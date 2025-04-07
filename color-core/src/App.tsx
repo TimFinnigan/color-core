@@ -8,33 +8,50 @@ const styles: Record<string, CSSProperties> = {
     backgroundColor: '#f9fafb',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
   },
   header: {
     backgroundColor: '#fff',
-    padding: '1rem',
+    padding: '0.75rem 0',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 20,
   },
   headerContent: {
-    maxWidth: '1200px',
-    margin: '0 auto',
+    padding: '0 1rem',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   title: {
     fontSize: '1.5rem',
     fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  appIcon: {
+    fontSize: '1.8rem',
+    marginRight: '0.5rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonGroup: {
     display: 'flex',
-    gap: '0.75rem',
+    gap: '0.5rem',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
   },
   button: {
-    padding: '0.5rem 1rem',
+    padding: '0.5rem 0.75rem',
     borderRadius: '0.375rem',
     fontSize: '0.875rem',
     fontWeight: '500',
     cursor: 'pointer',
+    whiteSpace: 'nowrap',
   },
   primaryButton: {
     backgroundColor: '#6366f1',
@@ -49,6 +66,9 @@ const styles: Record<string, CSSProperties> = {
   mainContainer: {
     display: 'flex',
     flex: 1,
+    width: '100%',
+    boxSizing: 'border-box',
+    position: 'relative',
   },
   sidebar: {
     width: '250px',
@@ -57,10 +77,11 @@ const styles: Record<string, CSSProperties> = {
     padding: '1.25rem',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     overflowY: 'auto',
-    height: 'calc(100vh - 64px)', // Subtract header height
+    height: 'calc(100vh - 64px)',
     position: 'sticky',
     top: '64px',
     borderRight: '1px solid #e2e8f0',
+    boxSizing: 'border-box',
   },
   mainContent: {
     flex: 1,
@@ -81,17 +102,19 @@ const styles: Record<string, CSSProperties> = {
     cursor: 'pointer',
     transition: 'transform 0.2s, box-shadow 0.2s',
     overflow: 'hidden',
+    minWidth: 0,
   },
   colorLabel: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    padding: '0.75rem',
+    padding: '0.5rem',
     textAlign: 'center',
     fontFamily: 'monospace',
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     color: 'white',
+    fontSize: 'clamp(10px, 2vw, 14px)',
   },
   welcomeScreen: {
     maxWidth: '400px',
@@ -117,6 +140,17 @@ function App() {
   const [lockedColors, setLockedColors] = useState<boolean[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
   const [hoveredLockIndex, setHoveredLockIndex] = useState<number | null>(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // Get all categories for organization
   const categories = getAllCategories();
@@ -194,31 +228,36 @@ function App() {
     <div style={styles.container}>
       {/* Header */}
       <header style={styles.header}>
-        <div style={styles.headerContent}>
-          <h1 style={styles.title}>Color Core</h1>
+        <div style={{
+          ...styles.headerContent,
+          paddingLeft: 'clamp(0.75rem, 3vw, 2rem)',
+          paddingRight: 'clamp(0.75rem, 3vw, 2rem)',
+        }}>
+          <h1 style={styles.title}>
+            <span style={styles.appIcon}>🎨</span>
+            Color Core
+          </h1>
           
           <div style={styles.buttonGroup}>
             {activeStyleId && (
               <>
-                <div style={styles.buttonGroup}>
-                  <button
-                    onClick={exportPalette}
-                    style={{...styles.button, ...styles.secondaryButton}}
-                  >
-                    Copy
-                  </button>
-                  <button
-                    onClick={saveAsImage}
-                    style={{...styles.button, ...styles.secondaryButton}}
-                  >
-                    Save as Image
-                  </button>
-                </div>
                 <button
                   onClick={generateNewScheme}
                   style={{...styles.button, ...styles.primaryButton}}
                 >
                   Generate New
+                </button>
+                <button
+                  onClick={exportPalette}
+                  style={{...styles.button, ...styles.secondaryButton}}
+                >
+                  Copy
+                </button>
+                <button
+                  onClick={saveAsImage}
+                  style={{...styles.button, ...styles.secondaryButton}}
+                >
+                  Save as Image
                 </button>
               </>
             )}
@@ -228,7 +267,11 @@ function App() {
 
       <div style={styles.mainContainer as CSSProperties}>
         {/* Sidebar - Always visible */}
-        <div style={styles.sidebar as CSSProperties}>
+        <div style={{
+          ...styles.sidebar,
+          width: windowWidth < 768 ? '200px' : '250px',
+          padding: windowWidth < 768 ? '1rem' : '1.25rem',
+        } as CSSProperties}>
           <h2 style={{fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem'}}>
             Choose Your Core
           </h2>
