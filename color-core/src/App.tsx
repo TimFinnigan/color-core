@@ -140,6 +140,7 @@ function App() {
   const [lockedColors, setLockedColors] = useState<boolean[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
   const [hoveredLockIndex, setHoveredLockIndex] = useState<number | null>(null);
+  const [hoveredStyleId, setHoveredStyleId] = useState<string | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   // Update window width on resize
@@ -345,12 +346,22 @@ function App() {
                   <button
                     key={style.id}
                     onClick={() => handleStyleSelect(style.id)}
+                    onMouseEnter={() => setHoveredStyleId(style.id)}
+                    onMouseLeave={() => setHoveredStyleId(null)}
                     style={{
                       padding: '0.75rem',
                       textAlign: 'left',
                       borderRadius: '0.375rem',
-                      backgroundColor: activeStyleId === style.id ? '#eef2ff' : 'white',
+                      backgroundColor: activeStyleId === style.id 
+                        ? '#eef2ff' 
+                        : hoveredStyleId === style.id ? '#f9fafb' : 'white',
                       border: `1px solid ${activeStyleId === style.id ? '#6366f1' : '#e5e7eb'}`,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      transform: hoveredStyleId === style.id ? 'translateY(-2px)' : 'translateY(0)',
+                      boxShadow: hoveredStyleId === style.id 
+                        ? '0 4px 6px rgba(0,0,0,0.1)' 
+                        : '0 1px 2px rgba(0,0,0,0.05)',
                     } as CSSProperties}
                   >
                     <div>
@@ -411,17 +422,18 @@ function App() {
                             backgroundColor: hoveredLockIndex === index ? 
                               'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
                             color: 'white',
-                            width: '32px',
-                            height: '32px',
+                            width: '40px',
+                            height: '40px',
                             borderRadius: '50%',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             border: 'none',
                             cursor: 'pointer',
-                            fontSize: '16px',
+                            fontSize: '20px',
                             transition: 'all 0.2s',
                             transform: hoveredLockIndex === index ? 'scale(1.1)' : 'scale(1)',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                           } as CSSProperties}
                           onClick={(e) => {
                             e.stopPropagation();
